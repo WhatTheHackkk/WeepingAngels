@@ -75,11 +75,11 @@ export const CinematicMainMenu: React.FC<CinematicMainMenuProps> = ({
 
   return (
     <div
-      className="fixed inset-0 z-40 bg-black text-slate-100 flex flex-col justify-between p-6 sm:p-12 select-none pointer-events-auto overflow-hidden"
+      className="fixed inset-0 z-40 bg-black text-[#e2d8c3] flex flex-col justify-between p-6 sm:p-12 select-none pointer-events-auto overflow-hidden font-gothic"
       role="region"
-      aria-label="Project 27 Gothic Main Menu"
+      aria-label="Weeping Angels: The Final Gaze Main Menu"
     >
-      {/* Background Looping Gothic Cathedral Video */}
+      {/* Background Looping Gothic Cathedral Video (FinalGenerated.mp4) */}
       <video
         ref={videoRef}
         autoPlay
@@ -87,85 +87,70 @@ export const CinematicMainMenu: React.FC<CinematicMainMenuProps> = ({
         muted
         playsInline
         onLoadedData={() => setVideoLoaded(true)}
-        className="fixed inset-0 w-full h-full object-cover pointer-events-none brightness-75 contrast-125"
+        className="fixed inset-0 w-full h-full object-cover pointer-events-none brightness-95 contrast-110"
       >
+        <source src="/FinalGenerated.mp4" type="video/mp4" />
+        <source src="/Music/FinalGenerated.mp4" type="video/mp4" />
         <source src="/IntroPage.mp4" type="video/mp4" />
-        <source src="/Music/IntroPage.mp4" type="video/mp4" />
       </video>
 
-      {/* Dark Radial Vignette & Blood-Tinted Edge Glow */}
+      {/* High-Visibility Subtle Vignette — Preserves rich cathedral video detail */}
       <div
         className="fixed inset-0 pointer-events-none"
         style={{
           background:
-            'radial-gradient(circle at 50% 50%, rgba(5, 2, 7, 0.45) 0%, rgba(3, 1, 4, 0.82) 65%, rgba(0, 0, 0, 0.98) 100%)',
-        }}
-      />
-      <div
-        className="fixed inset-0 pointer-events-none opacity-20"
-        style={{
-          backgroundImage:
-            'repeating-linear-gradient(0deg, rgba(220, 38, 38, 0.12) 0px, rgba(220, 38, 38, 0.12) 1px, transparent 1px, transparent 3px)',
+            'radial-gradient(circle at 50% 50%, rgba(0, 0, 0, 0.1) 0%, rgba(8, 6, 10, 0.38) 72%, rgba(0, 0, 0, 0.85) 100%)',
         }}
       />
 
-      {/* Top Bar: Project 27 Classification Badge + Audio Toggle */}
-      <header className="relative z-10 flex items-center justify-between w-full">
-        <div className="flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-black/60 backdrop-blur-md border border-red-900/60 font-mono-tabular text-xs text-red-400 font-semibold tracking-[0.22em] uppercase shadow-[0_0_20px_rgba(220,38,38,0.25)]">
-          <ShieldAlert className="w-3.5 h-3.5 text-red-500" />
-          <span>PROJECT 27 // CONTAINMENT DIVISION</span>
-        </div>
-
+      {/* Top Bar: Clean Audio Toggle on Top Right (Top-left badge removed) */}
+      <header className="relative z-10 flex items-center justify-end w-full">
         <button
           onClick={onToggleAudio}
           onMouseEnter={() => soundEngine.playButtonHover()}
-          className="p-2.5 rounded-xl bg-black/60 backdrop-blur-md border border-red-900/60 text-slate-300 hover:text-white hover:border-red-500/70 transition-all cursor-pointer shadow-[0_0_15px_rgba(220,38,38,0.2)]"
+          className="p-3 rounded-full bg-black/60 backdrop-blur-md border border-[#c5a059]/40 text-[#d4af37] hover:text-white hover:border-[#ffd700] hover:shadow-[0_0_20px_rgba(212,175,55,0.45)] transition-all cursor-pointer shadow-[0_4px_16px_rgba(0,0,0,0.8)]"
           title={audioEnabled ? 'Mute Audio' : 'Unmute Audio'}
           aria-label={audioEnabled ? 'Mute Audio' : 'Unmute Audio'}
         >
-          {audioEnabled ? <Volume2 className="w-5 h-5 text-red-400" /> : <VolumeX className="w-5 h-5 text-slate-500" />}
+          {audioEnabled ? <Volume2 className="w-5 h-5 text-[#d4af37]" /> : <VolumeX className="w-5 h-5 text-slate-500" />}
         </button>
       </header>
 
-      {/* Center Hero: Mouse-Parallax Title Tracking */}
+      {/* Center Hero: Mouse-Parallax Ancient Gold Title */}
       <main className="relative z-10 my-auto text-center flex flex-col items-center">
         <div
           style={{
-            transform: `perspective(1000px) rotateX(${-parallax.y * 6}deg) rotateY(${
-              parallax.x * 8
-            }deg) translate3d(${parallax.x * 14}px, ${parallax.y * 10}px, 0)`,
+            transform: `perspective(1000px) rotateX(${-parallax.y * 5}deg) rotateY(${
+              parallax.x * 7
+            }deg) translate3d(${parallax.x * 12}px, ${parallax.y * 8}px, 0)`,
             transition: 'transform 0.08s ease-out',
           }}
           className="flex flex-col items-center"
         >
-          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded bg-red-950/70 border border-red-800/60 font-mono-tabular text-[11px] sm:text-xs tracking-[0.3em] text-red-300 font-bold uppercase mb-4 shadow-[0_0_20px_rgba(239,68,68,0.35)]">
+          <div className="inline-flex items-center gap-2 px-4 py-1 rounded bg-black/60 border border-[#c5a059]/40 font-gothic text-[11px] sm:text-xs tracking-[0.35em] text-[#d4af37] font-bold uppercase mb-4 shadow-[0_0_20px_rgba(212,175,55,0.25)]">
             <span>PROJECT 27 PRESENTS</span>
           </div>
 
           <h1
-            className="font-display text-4xl sm:text-6xl md:text-8xl font-black tracking-[0.16em] text-white uppercase"
+            className="font-ancient text-4xl sm:text-6xl md:text-8xl font-black tracking-[0.16em] text-[#f7eedb] uppercase"
             style={{
               textShadow:
-                '0 0 45px rgba(220, 38, 38, 0.85), 0 0 90px rgba(185, 28, 28, 0.45), 0 4px 18px rgba(0, 0, 0, 0.95)',
+                '0 0 35px rgba(212, 175, 55, 0.65), 0 0 70px rgba(180, 130, 20, 0.35), 0 4px 18px rgba(0, 0, 0, 0.98)',
             }}
           >
             WEEPING ANGELS
           </h1>
 
           <div
-            className="mt-2 font-mono-tabular text-sm sm:text-xl md:text-2xl tracking-[0.45em] text-red-400 uppercase font-bold"
-            style={{ textShadow: '0 0 20px rgba(239, 68, 68, 0.65)' }}
+            className="mt-2.5 font-gothic text-base sm:text-2xl md:text-3xl tracking-[0.55em] text-[#d4af37] uppercase font-bold"
+            style={{ textShadow: '0 0 20px rgba(212, 175, 55, 0.55), 0 2px 8px rgba(0,0,0,0.9)' }}
           >
             THE FINAL GAZE
           </div>
-
-          <p className="mt-5 max-w-lg font-mono-tabular text-xs sm:text-sm text-slate-300/80 tracking-wider leading-relaxed px-4">
-            Procedural 10×10 Labyrinth · 4 Stone Entities · 12-Meter Quantum-Lock Protocol
-          </p>
         </div>
 
-        {/* 4 Interactive Menu Buttons with Hover Glow Effects */}
-        <nav aria-label="Main Menu Navigation" className="mt-10 flex flex-col items-center gap-3.5 w-full max-w-md px-4 font-mono-tabular">
+        {/* 4 Interactive Gothic Menu Buttons with Golden Glow Effects */}
+        <nav aria-label="Main Menu Navigation" className="mt-10 flex flex-col items-center gap-3.5 w-full max-w-md px-4 font-gothic">
           {/* 1. ENTER THE LABYRINTH */}
           <button
             onClick={() => {
@@ -173,9 +158,9 @@ export const CinematicMainMenu: React.FC<CinematicMainMenuProps> = ({
               onEnterLabyrinth();
             }}
             onMouseEnter={() => soundEngine.playButtonHover()}
-            className="w-full py-4 px-6 rounded-xl bg-gradient-to-r from-red-800 via-red-700 to-red-900 hover:from-red-600 hover:via-red-500 hover:to-red-700 text-white font-bold text-sm sm:text-base tracking-[0.22em] uppercase border border-red-400/80 shadow-[0_0_35px_rgba(220,38,38,0.65)] hover:shadow-[0_0_55px_rgba(239,68,68,0.95)] transition-all cursor-pointer flex items-center justify-center gap-3 active:scale-[0.98]"
+            className="group w-full py-4 px-6 rounded-xl bg-gradient-to-r from-[#6b1414]/90 via-[#991b1b]/90 to-[#6b1414]/90 hover:from-[#851818] hover:via-[#b91c1c] hover:to-[#851818] text-[#fff6dc] font-gothic font-bold text-sm sm:text-base tracking-[0.25em] uppercase border border-[#d4af37]/75 shadow-[0_0_30px_rgba(212,175,55,0.35)] hover:shadow-[0_0_45px_rgba(255,215,0,0.6)] transition-all cursor-pointer flex items-center justify-center gap-3 active:scale-[0.98]"
           >
-            <Play className="w-5 h-5 fill-current" />
+            <Play className="w-5 h-5 fill-current text-[#ffd700]" />
             <span>[ ENTER THE LABYRINTH ]</span>
           </button>
 
@@ -183,9 +168,9 @@ export const CinematicMainMenu: React.FC<CinematicMainMenuProps> = ({
           <button
             onClick={() => openModal('settings')}
             onMouseEnter={() => soundEngine.playButtonHover()}
-            className="w-full py-3.5 px-6 rounded-xl bg-black/60 hover:bg-red-950/40 text-slate-200 hover:text-white font-bold text-xs sm:text-sm tracking-[0.2em] uppercase border border-red-900/50 hover:border-red-500/80 backdrop-blur-md shadow-[0_0_20px_rgba(0,0,0,0.6)] hover:shadow-[0_0_30px_rgba(220,38,38,0.45)] transition-all cursor-pointer flex items-center justify-center gap-2.5 active:scale-[0.98]"
+            className="w-full py-3 px-6 rounded-xl bg-black/65 hover:bg-[#1a140e]/80 text-[#d8d0c2] hover:text-[#fff6dc] font-gothic font-semibold text-xs sm:text-sm tracking-[0.22em] uppercase border border-[#c5a059]/35 hover:border-[#ffd700]/70 backdrop-blur-md shadow-[0_4px_16px_rgba(0,0,0,0.7)] hover:shadow-[0_0_25px_rgba(212,175,55,0.35)] transition-all cursor-pointer flex items-center justify-center gap-2.5 active:scale-[0.98]"
           >
-            <SettingsIcon className="w-4 h-4 text-red-400" />
+            <SettingsIcon className="w-4 h-4 text-[#d4af37]" />
             <span>[ SETTINGS ]</span>
           </button>
 
@@ -193,26 +178,26 @@ export const CinematicMainMenu: React.FC<CinematicMainMenuProps> = ({
           <button
             onClick={() => openModal('logs')}
             onMouseEnter={() => soundEngine.playButtonHover()}
-            className="w-full py-3.5 px-6 rounded-xl bg-black/60 hover:bg-red-950/40 text-slate-200 hover:text-white font-bold text-xs sm:text-sm tracking-[0.2em] uppercase border border-red-900/50 hover:border-red-500/80 backdrop-blur-md shadow-[0_0_20px_rgba(0,0,0,0.6)] hover:shadow-[0_0_30px_rgba(220,38,38,0.45)] transition-all cursor-pointer flex items-center justify-center gap-2.5 active:scale-[0.98]"
+            className="w-full py-3 px-6 rounded-xl bg-black/65 hover:bg-[#1a140e]/80 text-[#d8d0c2] hover:text-[#fff6dc] font-gothic font-semibold text-xs sm:text-sm tracking-[0.22em] uppercase border border-[#c5a059]/35 hover:border-[#ffd700]/70 backdrop-blur-md shadow-[0_4px_16px_rgba(0,0,0,0.7)] hover:shadow-[0_0_25px_rgba(212,175,55,0.35)] transition-all cursor-pointer flex items-center justify-center gap-2.5 active:scale-[0.98]"
           >
-            <BookOpen className="w-4 h-4 text-violet-400" />
-            <span>[ CONTAINMENT LOGS ]</span>
+            <BookOpen className="w-4 h-4 text-[#d4af37]" />
+            <span>[ CHRONICLES &amp; LOGS ]</span>
           </button>
 
           {/* 4. CREDITS */}
           <button
             onClick={() => openModal('credits')}
             onMouseEnter={() => soundEngine.playButtonHover()}
-            className="w-full py-3.5 px-6 rounded-xl bg-black/60 hover:bg-red-950/40 text-slate-200 hover:text-white font-bold text-xs sm:text-sm tracking-[0.2em] uppercase border border-red-900/50 hover:border-red-500/80 backdrop-blur-md shadow-[0_0_20px_rgba(0,0,0,0.6)] hover:shadow-[0_0_30px_rgba(220,38,38,0.45)] transition-all cursor-pointer flex items-center justify-center gap-2.5 active:scale-[0.98]"
+            className="w-full py-3 px-6 rounded-xl bg-black/65 hover:bg-[#1a140e]/80 text-[#d8d0c2] hover:text-[#fff6dc] font-gothic font-semibold text-xs sm:text-sm tracking-[0.22em] uppercase border border-[#c5a059]/35 hover:border-[#ffd700]/70 backdrop-blur-md shadow-[0_4px_16px_rgba(0,0,0,0.7)] hover:shadow-[0_0_25px_rgba(212,175,55,0.35)] transition-all cursor-pointer flex items-center justify-center gap-2.5 active:scale-[0.98]"
           >
-            <Award className="w-4 h-4 text-amber-400" />
+            <Award className="w-4 h-4 text-[#d4af37]" />
             <span>[ CREDITS ]</span>
           </button>
         </nav>
       </main>
 
       {/* Bottom Footer */}
-      <footer className="relative z-10 text-center font-mono-tabular text-[10px] text-slate-500 tracking-[0.25em] uppercase">
+      <footer className="relative z-10 text-center font-gothic text-[11px] text-[#c5a059]/60 tracking-[0.3em] uppercase">
         PROJECT 27 // ALL COGNITIVE RIGHTS RESERVED // DON'T BLINK
       </footer>
 
@@ -220,36 +205,36 @@ export const CinematicMainMenu: React.FC<CinematicMainMenuProps> = ({
       {/* MODAL 1: SETTINGS */}
       {/* ========================================================================= */}
       {activeModal === 'settings' && (
-        <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-xl flex items-center justify-center p-4">
-          <div className="relative w-full max-w-lg rounded-2xl p-6 sm:p-8 bg-[#09050d] border border-red-900/80 shadow-[0_0_60px_rgba(220,38,38,0.35)] font-mono-tabular text-slate-100">
-            <div className="flex items-center justify-between pb-4 border-b border-red-900/60">
-              <div className="flex items-center gap-2 text-red-400 text-sm font-bold tracking-widest uppercase">
-                <Sliders className="w-4 h-4" />
-                <span>TACTICAL SETTINGS</span>
+        <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-xl flex items-center justify-center p-4 font-gothic">
+          <div className="relative w-full max-w-lg rounded-2xl p-6 sm:p-8 bg-[#0d0912]/95 border border-[#c5a059]/45 shadow-[0_0_60px_rgba(212,175,55,0.25)] text-[#e2d8c3]">
+            <div className="flex items-center justify-between pb-4 border-b border-[#c5a059]/30">
+              <div className="flex items-center gap-2 text-[#d4af37] text-sm font-ancient font-bold tracking-[0.25em] uppercase">
+                <Sliders className="w-4 h-4 text-[#ffd700]" />
+                <span>EXPEDITION SETTINGS</span>
               </div>
               <button
                 onClick={closeModal}
-                className="p-1.5 rounded-lg hover:bg-white/10 text-slate-400 hover:text-white transition-colors"
+                className="p-1.5 rounded-lg hover:bg-white/10 text-[#c5a059] hover:text-white transition-colors cursor-pointer"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
-            <div className="mt-6 space-y-5 text-xs sm:text-sm">
+            <div className="mt-6 space-y-5 text-xs sm:text-sm font-gothic">
               {/* Flashlight Beam Profile */}
               <div>
-                <label className="text-slate-400 block mb-2 uppercase tracking-wider text-xs">
-                  FLASHLIGHT BEAM EMITTER PROFILE
+                <label className="text-[#c5a059] block mb-2 uppercase tracking-wider text-xs font-ancient">
+                  LANTERN BEAM PROFILE
                 </label>
                 <div className="grid grid-cols-3 gap-2">
                   {(['tactical', 'overdrive', 'amber'] as const).map((profile) => (
                     <button
                       key={profile}
                       onClick={() => onBeamProfileChange(profile)}
-                      className={`py-2 px-3 rounded-lg border text-xs font-bold uppercase tracking-wider transition-all cursor-pointer ${
+                      className={`py-2 px-3 rounded-lg border text-xs font-ancient font-bold uppercase tracking-wider transition-all cursor-pointer ${
                         beamProfile === profile
-                          ? 'border-violet-400 bg-violet-950/70 text-violet-200 shadow-[0_0_15px_rgba(168,85,247,0.4)]'
-                          : 'border-slate-800 bg-black/40 text-slate-400 hover:border-slate-600'
+                          ? 'border-[#ffd700] bg-[#3a280c]/80 text-[#ffd700] shadow-[0_0_15px_rgba(212,175,55,0.4)]'
+                          : 'border-[#5a4825]/40 bg-black/40 text-slate-400 hover:border-[#c5a059]'
                       }`}
                     >
                       {profile}
@@ -259,21 +244,21 @@ export const CinematicMainMenu: React.FC<CinematicMainMenuProps> = ({
               </div>
 
               {/* Edge-Turn Assistance */}
-              <div className="flex items-center justify-between p-3 rounded-xl bg-black/40 border border-slate-800">
+              <div className="flex items-center justify-between p-3.5 rounded-xl bg-black/50 border border-[#5a4825]/40">
                 <div>
-                  <div className="font-semibold text-slate-200 uppercase tracking-wider text-xs">
+                  <div className="font-ancient font-semibold text-[#f1e6cf] uppercase tracking-wider text-xs">
                     EDGE-SCREEN LOOK ASSIST
                   </div>
-                  <div className="text-[11px] text-slate-500">
-                    Auto-rotate yaw when cursor approaches display bounds
+                  <div className="text-[11px] text-[#c5a059]/70 mt-0.5">
+                    Rotate gaze when cursor approaches edge of viewport
                   </div>
                 </div>
                 <button
                   onClick={onToggleEdgeTurn}
-                  className={`py-1.5 px-3 rounded-md border text-xs font-bold uppercase transition-colors ${
+                  className={`py-1.5 px-3 rounded-md border text-xs font-ancient font-bold uppercase transition-colors cursor-pointer ${
                     edgeTurnEnabled
-                      ? 'bg-violet-950 border-violet-500 text-violet-200'
-                      : 'bg-slate-900 border-slate-700 text-slate-400'
+                      ? 'bg-[#3a280c] border-[#ffd700] text-[#ffd700]'
+                      : 'bg-black/60 border-slate-700 text-slate-500'
                   }`}
                 >
                   {edgeTurnEnabled ? 'ENABLED' : 'DISABLED'}
@@ -281,21 +266,21 @@ export const CinematicMainMenu: React.FC<CinematicMainMenuProps> = ({
               </div>
 
               {/* Audio Master */}
-              <div className="flex items-center justify-between p-3 rounded-xl bg-black/40 border border-slate-800">
+              <div className="flex items-center justify-between p-3.5 rounded-xl bg-black/50 border border-[#5a4825]/40">
                 <div>
-                  <div className="font-semibold text-slate-200 uppercase tracking-wider text-xs">
-                    SPATIAL AUDIO SYNTHESIZER
+                  <div className="font-ancient font-semibold text-[#f1e6cf] uppercase tracking-wider text-xs">
+                    SPATIAL AUDIO SANCTUARY
                   </div>
-                  <div className="text-[11px] text-slate-500">
-                    Proximity heartbeat, multi-track threats, granite scrapes
+                  <div className="text-[11px] text-[#c5a059]/70 mt-0.5">
+                    Cathedral echoes, grinding granite, heartbeat tempo
                   </div>
                 </div>
                 <button
                   onClick={onToggleAudio}
-                  className={`py-1.5 px-3 rounded-md border text-xs font-bold uppercase transition-colors ${
+                  className={`py-1.5 px-3 rounded-md border text-xs font-ancient font-bold uppercase transition-colors cursor-pointer ${
                     audioEnabled
-                      ? 'bg-red-950 border-red-500 text-red-200'
-                      : 'bg-slate-900 border-slate-700 text-slate-400'
+                      ? 'bg-[#3a280c] border-[#ffd700] text-[#ffd700]'
+                      : 'bg-black/60 border-slate-700 text-slate-500'
                   }`}
                 >
                   {audioEnabled ? 'ONLINE' : 'MUTED'}
@@ -303,12 +288,12 @@ export const CinematicMainMenu: React.FC<CinematicMainMenuProps> = ({
               </div>
             </div>
 
-            <div className="mt-7 pt-4 border-t border-red-900/60 flex justify-end">
+            <div className="mt-7 pt-4 border-t border-[#c5a059]/30 flex justify-end">
               <button
                 onClick={closeModal}
-                className="py-2.5 px-5 rounded-xl bg-red-700 hover:bg-red-600 text-white font-bold text-xs uppercase tracking-widest cursor-pointer shadow-[0_0_20px_rgba(220,38,38,0.5)]"
+                className="py-2.5 px-6 rounded-xl bg-[#2a1b08] hover:bg-[#3d270c] border border-[#ffd700] text-[#ffd700] font-ancient font-bold text-xs uppercase tracking-[0.2em] cursor-pointer shadow-[0_0_20px_rgba(212,175,55,0.4)]"
               >
-                APPLY &amp; CLOSE
+                APPLY &amp; RETURN
               </button>
             </div>
           </div>
@@ -319,65 +304,65 @@ export const CinematicMainMenu: React.FC<CinematicMainMenuProps> = ({
       {/* MODAL 2: CONTAINMENT LOGS */}
       {/* ========================================================================= */}
       {activeModal === 'logs' && (
-        <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-xl flex items-center justify-center p-4">
-          <div className="relative w-full max-w-2xl rounded-2xl p-6 sm:p-8 bg-[#09050d] border border-red-900/80 shadow-[0_0_60px_rgba(220,38,38,0.35)] font-mono-tabular text-slate-100 max-h-[85vh] overflow-y-auto">
-            <div className="flex items-center justify-between pb-4 border-b border-red-900/60">
-              <div className="flex items-center gap-2 text-violet-400 text-sm font-bold tracking-widest uppercase">
-                <BookOpen className="w-4 h-4" />
-                <span>PROJECT 27 // CONTAINMENT LOG ARCHIVE</span>
+        <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-xl flex items-center justify-center p-4 font-gothic">
+          <div className="relative w-full max-w-2xl rounded-2xl p-6 sm:p-8 bg-[#0d0912]/95 border border-[#c5a059]/45 shadow-[0_0_60px_rgba(212,175,55,0.25)] text-[#e2d8c3] max-h-[85vh] overflow-y-auto">
+            <div className="flex items-center justify-between pb-4 border-b border-[#c5a059]/30">
+              <div className="flex items-center gap-2 text-[#d4af37] text-sm font-ancient font-bold tracking-[0.25em] uppercase">
+                <BookOpen className="w-4 h-4 text-[#ffd700]" />
+                <span>CHRONICLES OF THE SEPULCHRE // SACRED ARCHIVE</span>
               </div>
               <button
                 onClick={closeModal}
-                className="p-1.5 rounded-lg hover:bg-white/10 text-slate-400 hover:text-white transition-colors"
+                className="p-1.5 rounded-lg hover:bg-white/10 text-[#c5a059] hover:text-white transition-colors cursor-pointer"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
-            <div className="mt-6 space-y-4 text-xs sm:text-sm">
-              <div className="p-4 rounded-xl bg-black/50 border border-violet-900/40">
-                <div className="text-violet-300 font-bold tracking-wider text-xs">
-                  ARCHIVE ENTRY #27-01 // ANOMALY TAXONOMY
+            <div className="mt-6 space-y-4 text-xs sm:text-sm font-gothic">
+              <div className="p-4 rounded-xl bg-black/50 border border-[#5a4825]/40">
+                <div className="text-[#ffd700] font-ancient font-bold tracking-wider text-xs">
+                  CODEX I // THE QUANTUM LOCK
                 </div>
                 <p className="mt-1.5 text-slate-300 leading-relaxed text-xs">
-                  Subject classified as "Weeping Angel" — an ancient quantum-locked entity that exists in a state of harmless stone sculpture whenever observed by any sentient creature. In dark corridors or behind eyes, velocity exceeds 7.2 meters/second.
+                  Known to mortals as the Weeping Angels — solitary assassins crafted from unyielding granite. While held in sight by any living soul, they are frozen in permanent quantum lock. Turn away, or blink, and they cross great halls in fractions of a heartbeat.
                 </p>
               </div>
 
-              <div className="p-4 rounded-xl bg-black/50 border border-red-900/40">
-                <div className="text-red-300 font-bold tracking-wider text-xs">
-                  ARCHIVE ENTRY #27-02 // 12-METER PROXIMITY TELEMETRY
+              <div className="p-4 rounded-xl bg-black/50 border border-[#5a4825]/40">
+                <div className="text-[#ffd700] font-ancient font-bold tracking-wider text-xs">
+                  CODEX II // PROXIMITY HUNTING
                 </div>
                 <p className="mt-1.5 text-slate-300 leading-relaxed text-xs">
-                  Sensors confirm entities observe a 12.0m aggro perimeter. Beyond 12m, neural activity is completely inert. Within 12m, breaking direct line of sight causes instant predatory pursuit.
+                  The stone remains still beyond 12 cubits. When inside this proximity, their hunting senses awaken. Trust your ears: the grinding of granite upon stone and your mounting pulse shall signal their advance.
                 </p>
               </div>
 
-              <div className="p-4 rounded-xl bg-black/50 border border-amber-900/40">
-                <div className="text-amber-300 font-bold tracking-wider text-xs">
-                  ARCHIVE ENTRY #27-03 // CORNER-OCCLUSION DEFENSE
+              <div className="p-4 rounded-xl bg-black/50 border border-[#5a4825]/40">
+                <div className="text-[#ffd700] font-ancient font-bold tracking-wider text-xs">
+                  CODEX III // SHADOWS &amp; ARCHWAYS
                 </div>
                 <p className="mt-1.5 text-slate-300 leading-relaxed text-xs">
-                  Corridor right-angles naturally occlude entity perception. Rounding a corner breaks direct tracking and forces the Angel to freeze at its last verified coordinate until sight is re-established.
+                  Corridor angles and heavy archways break their gaze. Rounding a masonry pillar temporarily halts their hunt until sightline is restored. Hold fast, and do not blink [B] while looking directly at them.
                 </p>
               </div>
 
-              <div className="p-4 rounded-xl bg-black/50 border border-purple-900/40">
-                <div className="text-purple-300 font-bold tracking-wider text-xs">
-                  ARCHIVE ENTRY #27-04 // TRIPLE KEYCARD PROTOCOL
+              <div className="p-4 rounded-xl bg-black/50 border border-[#5a4825]/40">
+                <div className="text-[#ffd700] font-ancient font-bold tracking-wider text-xs">
+                  CODEX IV // THREE VIOLET SEALS
                 </div>
                 <p className="mt-1.5 text-slate-300 leading-relaxed text-xs">
-                  To prevent unauthorized breach, Sector 10×10 extraction portals require 3 separate Violet Keycards scattered in opposite labyrinth dead-ends. Secure all three before reaching the beacon.
+                  The ancient extraction gateway remains sealed shut until all three violet sigils are recovered from the deepest dead-ends of the catacombs. Seek each relic to break the lock and ascend.
                 </p>
               </div>
             </div>
 
-            <div className="mt-7 pt-4 border-t border-red-900/60 flex justify-end">
+            <div className="mt-7 pt-4 border-t border-[#c5a059]/30 flex justify-end">
               <button
                 onClick={closeModal}
-                className="py-2.5 px-5 rounded-xl bg-white/10 hover:bg-white/20 text-slate-200 font-bold text-xs uppercase tracking-widest cursor-pointer"
+                className="py-2.5 px-6 rounded-xl bg-[#2a1b08] hover:bg-[#3d270c] border border-[#ffd700] text-[#ffd700] font-ancient font-bold text-xs uppercase tracking-[0.2em] cursor-pointer shadow-[0_0_20px_rgba(212,175,55,0.4)]"
               >
-                CLOSE ARCHIVE
+                CLOSE CODEX
               </button>
             </div>
           </div>
@@ -388,49 +373,49 @@ export const CinematicMainMenu: React.FC<CinematicMainMenuProps> = ({
       {/* MODAL 3: CREDITS */}
       {/* ========================================================================= */}
       {activeModal === 'credits' && (
-        <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-xl flex items-center justify-center p-4">
-          <div className="relative w-full max-w-md rounded-2xl p-6 sm:p-8 bg-[#09050d] border border-red-900/80 shadow-[0_0_60px_rgba(220,38,38,0.35)] font-mono-tabular text-slate-100 text-center">
-            <div className="flex items-center justify-between pb-4 border-b border-red-900/60">
-              <div className="flex items-center gap-2 text-amber-400 text-sm font-bold tracking-widest uppercase">
-                <Award className="w-4 h-4" />
+        <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-xl flex items-center justify-center p-4 font-gothic">
+          <div className="relative w-full max-w-md rounded-2xl p-6 sm:p-8 bg-[#0d0912]/95 border border-[#c5a059]/45 shadow-[0_0_60px_rgba(212,175,55,0.25)] text-[#e2d8c3] text-center">
+            <div className="flex items-center justify-between pb-4 border-b border-[#c5a059]/30">
+              <div className="flex items-center gap-2 text-[#d4af37] text-sm font-ancient font-bold tracking-[0.25em] uppercase">
+                <Award className="w-4 h-4 text-[#ffd700]" />
                 <span>PROJECT 27 // PRODUCTION CREDITS</span>
               </div>
               <button
                 onClick={closeModal}
-                className="p-1.5 rounded-lg hover:bg-white/10 text-slate-400 hover:text-white transition-colors"
+                className="p-1.5 rounded-lg hover:bg-white/10 text-[#c5a059] hover:text-white transition-colors cursor-pointer"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
-            <div className="mt-6 space-y-4 text-xs">
+            <div className="mt-6 space-y-4 text-xs font-gothic">
               <div>
-                <div className="text-slate-400 text-[10px] tracking-widest uppercase">DEVELOPMENT &amp; ARCHITECTURE</div>
-                <div className="text-base font-bold text-white mt-0.5">PROJECT 27 TEAM</div>
+                <div className="text-[#c5a059] text-[10px] font-ancient tracking-[0.3em] uppercase">DEVELOPMENT &amp; ARCHITECTURE</div>
+                <div className="text-base font-ancient font-bold text-[#ffd700] mt-0.5">PROJECT 27 TEAM</div>
                 <div className="text-slate-400 text-[11px] mt-0.5">Weeping Angels: The Final Gaze</div>
               </div>
 
-              <div className="pt-3 border-t border-red-950/60">
-                <div className="text-slate-400 text-[10px] tracking-widest uppercase">3D GRAPHICS &amp; ENGINE</div>
+              <div className="pt-3 border-t border-[#5a4825]/30">
+                <div className="text-[#c5a059] text-[10px] font-ancient tracking-[0.3em] uppercase">3D GRAPHICS &amp; ENGINE</div>
                 <div className="text-slate-200 font-semibold mt-0.5">Three.js PBR Engine · Procedural 10×10 Labyrinth</div>
               </div>
 
-              <div className="pt-3 border-t border-red-950/60">
-                <div className="text-slate-400 text-[10px] tracking-widest uppercase">AUDIO &amp; SOUND DESIGN</div>
+              <div className="pt-3 border-t border-[#5a4825]/30">
+                <div className="text-[#c5a059] text-[10px] font-ancient tracking-[0.3em] uppercase">AUDIO &amp; SOUND DESIGN</div>
                 <div className="text-slate-200 font-semibold mt-0.5">Web Audio Synthesizer · Multi-Track Adaptive System</div>
               </div>
 
-              <div className="pt-3 border-t border-red-950/60 text-[10px] text-slate-500 leading-relaxed">
+              <div className="pt-3 border-t border-[#5a4825]/30 text-[10px] text-slate-500 leading-relaxed font-sans">
                 Inspired by the iconic "Weeping Angels" created by Steven Moffat for Doctor Who (BBC).
               </div>
             </div>
 
-            <div className="mt-7 pt-4 border-t border-red-900/60 flex justify-center">
+            <div className="mt-7 pt-4 border-t border-[#c5a059]/30 flex justify-center">
               <button
                 onClick={closeModal}
-                className="py-2.5 px-6 rounded-xl bg-white/10 hover:bg-white/20 text-slate-200 font-bold text-xs uppercase tracking-widest cursor-pointer"
+                className="py-2.5 px-6 rounded-xl bg-[#2a1b08] hover:bg-[#3d270c] border border-[#ffd700] text-[#ffd700] font-ancient font-bold text-xs uppercase tracking-[0.2em] cursor-pointer shadow-[0_0_20px_rgba(212,175,55,0.4)]"
               >
-                CLOSE
+                RETURN
               </button>
             </div>
           </div>

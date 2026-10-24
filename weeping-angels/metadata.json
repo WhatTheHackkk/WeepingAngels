@@ -1,6 +1,6 @@
 {
-  "name": "UMBRA // Procedural 3D Labyrinth",
-  "description": "Procedural 10x10 3D maze generated via recursive backtracker with first-person WASD navigation, strict AABB wall collision, mouse-tracked volumetric SpotLight flashlight, and furthest dead-end neon objective beacon.",
+  "name": "Weeping Angels: The Final Gaze",
+  "description": "3D Gothic Horror Experience - Weeping Angels: The Final Gaze. Navigate the stone catacombs, recover the 3 violet keycards, and do not blink.",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }

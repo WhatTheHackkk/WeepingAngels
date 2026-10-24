@@ -1590,6 +1590,7 @@ export default function App() {
           onBlueprintHoldChange={handleBlueprintHoldChange}
           onGenerateNewMaze={handleGenerateNewMaze}
           onResetPosition={handleResetPosition}
+          onReturnToMainMenu={handleReturnToMainMenu}
           playerWorldPos={playerWorldPos}
           angelsPos={angelsPos}
         />

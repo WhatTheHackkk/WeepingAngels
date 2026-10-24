@@ -2,8 +2,10 @@
 
 @layer base {
   :root {
-    --font-display: 'Oxanium', sans-serif;
-    --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    --font-ancient: 'Cinzel Decorative', 'Cinzel', serif;
+    --font-gothic: 'Cinzel', serif;
+    --font-serif-ancient: 'IM Fell English', Georgia, serif;
+    --font-old-english: 'MedievalSharp', cursive, serif;
     --font-mono: 'JetBrains Mono', monospace;
   }
 
@@ -22,17 +24,51 @@
     padding: 0;
     overflow: hidden;
     background-color: #000000;
-    color: #f1f5f9;
-    font-family: var(--font-sans);
+    color: #e2d8c3;
+    font-family: var(--font-gothic);
     -webkit-font-smoothing: antialiased;
   }
 }
 
-.font-display {
-  font-family: var(--font-display);
+.font-ancient {
+  font-family: var(--font-ancient);
+}
+
+.font-gothic {
+  font-family: var(--font-gothic);
+}
+
+.font-serif-ancient {
+  font-family: var(--font-serif-ancient);
+}
+
+.font-old-english {
+  font-family: var(--font-old-english);
 }
 
 .font-mono-tabular {
   font-family: var(--font-mono);
   font-variant-numeric: tabular-nums;
+}
+
+/* Gold Text Glows & Ancient Atmospheric Effects */
+.gold-glow-subtle {
+  text-shadow: 0 0 14px rgba(212, 175, 55, 0.45), 0 0 28px rgba(180, 140, 30, 0.25);
+}
+
+.gold-glow-intense {
+  text-shadow: 0 0 16px rgba(255, 215, 0, 0.8), 0 0 32px rgba(218, 165, 32, 0.5), 0 2px 6px rgba(0, 0, 0, 0.9);
+}
+
+.crimson-glow {
+  text-shadow: 0 0 20px rgba(220, 38, 38, 0.75), 0 0 40px rgba(153, 27, 27, 0.45);
+}
+
+@keyframes goldPulse {
+  0%, 100% { opacity: 0.85; filter: drop-shadow(0 0 10px rgba(212, 175, 55, 0.4)); }
+  50% { opacity: 1; filter: drop-shadow(0 0 22px rgba(245, 208, 92, 0.8)); }
+}
+
+.animate-gold-pulse {
+  animation: goldPulse 3.5s ease-in-out infinite;
 }

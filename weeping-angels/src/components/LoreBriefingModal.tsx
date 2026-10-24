@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { ShieldAlert, KeyRound, Eye, Compass, Terminal, ArrowRight, CornerDownLeft } from 'lucide-react';
+import React, { useEffect, useState, useRef } from 'react';
+import { Sparkles, Flame } from 'lucide-react';
 import { soundEngine } from '../maze/soundEffects';
 
 interface LoreBriefingModalProps {
@@ -7,15 +7,26 @@ interface LoreBriefingModalProps {
   onBackToMenu: () => void;
 }
 
+const LORE_PARAGRAPHS = [
+  'They are the Lonely Assassins — entities as ancient as time, frozen into lifeless stone only whilst observed.',
+  'To hold their gaze is your singular defense. To turn away is your doom.',
+  'While watched, they cannot move, held fast by quantum lock. Yet the instant your eyes turn — or you blink — they strike with terrifying swiftness.',
+  'Three violet sigils lie entombed within these sacred catacombs. Seek every stone to awaken the extraction gateway.',
+  'Trust not the shadows. Never turn your back. And above all else...',
+  'DO NOT BLINK.',
+];
+
 export const LoreBriefingModal: React.FC<LoreBriefingModalProps> = ({
   onBreachContainment,
   onBackToMenu,
 }) => {
-  const [typedChars, setTypedChars] = useState(0);
+  const fullText = LORE_PARAGRAPHS.join('\n\n');
+  const [displayedLength, setDisplayedLength] = useState(0);
+  const [isTypingComplete, setIsTypingComplete] = useState(false);
+  const clickCounterRef = useRef(0);
 
+  // Keyboard shortcut listeners: Enter to descend, Escape to abort, Space to complete typewriter
   useEffect(() => {
-    soundEngine.playBreachAlarm();
-
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.code === 'Enter' || e.code === 'NumpadEnter') {
         e.preventDefault();
@@ -25,146 +36,148 @@ export const LoreBriefingModal: React.FC<LoreBriefingModalProps> = ({
         e.preventDefault();
         soundEngine.playButtonClick();
         onBackToMenu();
+      } else if (e.code === 'Space' && !isTypingComplete) {
+        e.preventDefault();
+        setDisplayedLength(fullText.length);
+        setIsTypingComplete(true);
       }
     };
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [onBreachContainment, onBackToMenu]);
+  }, [onBreachContainment, onBackToMenu, isTypingComplete, fullText.length]);
 
-  // Fast typewriter effect for terminal feeling
+  // Antique Typewriter Effect with Audio Scribe Clicks
   useEffect(() => {
-    const timer = setInterval(() => {
-      setTypedChars((prev) => prev + 1);
-    }, 18);
-    return () => clearInterval(timer);
-  }, []);
+    if (displayedLength >= fullText.length) {
+      setIsTypingComplete(true);
+      return;
+    }
+
+    const nextChar = fullText[displayedLength];
+    // Slightly longer pauses on punctuation
+    const delay = nextChar === '.' || nextChar === '?' || nextChar === '!' ? 220 : nextChar === '\n' ? 140 : 28;
+
+    const timer = setTimeout(() => {
+      setDisplayedLength((prev) => {
+        const next = prev + 1;
+        clickCounterRef.current += 1;
+        // Play typewriter sound every 2-3 characters to keep audio rich and crisp without overwhelming
+        if (clickCounterRef.current % 2 === 0 && nextChar !== ' ' && nextChar !== '\n') {
+          soundEngine.playTypewriterClick();
+        }
+        return next;
+      });
+    }, delay);
+
+    return () => clearTimeout(timer);
+  }, [displayedLength, fullText]);
+
+  const displayedContent = fullText.slice(0, displayedLength);
 
   return (
     <div
-      className="fixed inset-0 z-50 bg-black/92 backdrop-blur-xl flex items-center justify-center p-4 md:p-8 select-none pointer-events-auto overflow-y-auto"
+      className="fixed inset-0 z-50 bg-black text-[#f1e6cf] flex flex-col justify-between p-6 sm:p-12 md:p-16 select-none pointer-events-auto overflow-hidden font-gothic"
       role="dialog"
-      aria-label="Classified Lore and Briefing Warning Dossier"
+      aria-label="Lore and Inscription of the Labyrinth"
     >
-      {/* CRT Scanline Overlay */}
+      {/* Background Gothic Cathedral Video */}
+      <video
+        autoPlay
+        loop
+        muted
+        playsInline
+        className="fixed inset-0 w-full h-full object-cover pointer-events-none brightness-[0.42] contrast-125 filter saturate-90"
+      >
+        <source src="/FinalGenerated.mp4" type="video/mp4" />
+        <source src="/Music/FinalGenerated.mp4" type="video/mp4" />
+      </video>
+
+      {/* Atmospheric Vignette & Subtle Warm Embers Gradient */}
       <div
-        className="fixed inset-0 pointer-events-none opacity-25"
+        className="fixed inset-0 pointer-events-none"
         style={{
-          backgroundImage:
-            'repeating-linear-gradient(0deg, rgba(239, 68, 68, 0.12) 0px, rgba(239, 68, 68, 0.12) 1px, transparent 1px, transparent 3px)',
+          background:
+            'radial-gradient(ellipse at 25% 30%, rgba(20, 14, 5, 0.45) 0%, rgba(5, 3, 7, 0.85) 60%, rgba(0, 0, 0, 0.98) 100%)',
         }}
       />
 
-      {/* Main Terminal Dossier Card */}
+      {/* Subtle CRT / Ancient parchment noise lines */}
       <div
-        className="relative z-10 w-full max-w-3xl rounded-2xl p-6 sm:p-9 border border-red-900/80 bg-[#060308]/95 backdrop-blur-2xl text-slate-100 shadow-[0_0_80px_rgba(220,38,38,0.35),inset_0_0_40px_rgba(127,29,29,0.25)]"
-      >
-        {/* Terminal Header */}
-        <div className="flex items-center justify-between pb-4 border-b border-red-900/60 font-mono-tabular text-xs">
-          <div className="flex items-center gap-2 text-red-400 font-bold tracking-[0.22em] uppercase">
-            <Terminal className="w-4 h-4 text-red-500" />
-            <span>PROJECT 27 // CLASSIFIED BRIEFING DOSSIER</span>
-          </div>
-          <span className="px-2.5 py-0.5 rounded bg-red-950/80 border border-red-700/60 text-red-300 tracking-widest text-[10px] uppercase font-bold animate-pulse">
-            CLEARANCE LEVEL: BLACK
-          </span>
+        className="fixed inset-0 pointer-events-none opacity-15"
+        style={{
+          backgroundImage:
+            'repeating-linear-gradient(0deg, rgba(212, 175, 55, 0.08) 0px, rgba(212, 175, 55, 0.08) 1px, transparent 1px, transparent 4px)',
+        }}
+      />
+
+      {/* TOP LEFT: Golden Antique Typewriter Lore Inscription */}
+      <div className="relative z-10 max-w-2xl text-left">
+        {/* Ancient Header */}
+        <div className="flex items-center gap-2.5 text-[#d4af37] text-xs sm:text-sm tracking-[0.35em] uppercase font-ancient font-semibold mb-4 text-glow-gold">
+          <Sparkles className="w-4 h-4 text-[#ffd700] animate-pulse" />
+          <span>CHRONICLES OF THE SEPULCHRE // LIBER PRIMUS</span>
         </div>
 
-        {/* Sub-Header */}
-        <div className="mt-5 text-center sm:text-left">
-          <h2 className="font-display text-2xl sm:text-3xl font-bold tracking-[0.16em] text-white uppercase"
-            style={{ textShadow: '0 0 24px rgba(239, 68, 68, 0.65)' }}
+        {/* Written Lore in Ancient Font and Golden Letters */}
+        <div
+          className="font-ancient text-base sm:text-lg md:text-xl text-[#f3e5ab] leading-relaxed tracking-wide space-y-4 whitespace-pre-line"
+          style={{
+            textShadow:
+              '0 0 16px rgba(212, 175, 55, 0.6), 0 0 32px rgba(180, 130, 20, 0.3), 0 2px 8px rgba(0,0,0,0.95)',
+          }}
+        >
+          {displayedContent}
+          {!isTypingComplete && (
+            <span className="inline-block w-2.5 h-5 ml-1 bg-[#ffd700] shadow-[0_0_12px_#ffd700] animate-pulse align-middle" />
+          )}
+        </div>
+
+        {/* Fast Skip prompt while typing */}
+        {!isTypingComplete && (
+          <button
+            onClick={() => {
+              setDisplayedLength(fullText.length);
+              setIsTypingComplete(true);
+            }}
+            className="mt-6 text-[11px] font-ancient tracking-[0.25em] text-[#c5a059]/70 hover:text-[#ffd700] uppercase transition-colors cursor-pointer"
           >
-            CONTAINMENT BREACH INITIATIVE
-          </h2>
-          <p className="mt-1 font-mono-tabular text-xs tracking-[0.24em] text-red-400 font-semibold uppercase">
-            RULES OF ENGAGEMENT // SECTOR 10×10 LABYRINTH
-          </p>
+            [ PRESS SPACE TO REVEAL FULL INSCRIPTION ]
+          </button>
+        )}
+      </div>
+
+      {/* BOTTOM ACTION BAR: Aesthetic Ancient Controls */}
+      <div className="relative z-10 pt-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-t border-[#c5a059]/30 font-gothic">
+        <div className="flex items-center gap-2 text-xs sm:text-sm text-[#c5a059] tracking-[0.2em] font-ancient">
+          <Flame className="w-4 h-4 text-[#d4af37] shrink-0" />
+          <span>THREE VIOLET SEALS · QUANTUM ENTITIES AWAKE</span>
         </div>
 
-        {/* 4 Classified Rules */}
-        <div className="mt-6 space-y-3.5 font-mono-tabular text-xs sm:text-sm">
-          {/* Rule 1 */}
-          <div className="p-3.5 rounded-xl bg-[#0a050d] border border-red-900/50 hover:border-violet-600/70 transition-colors">
-            <div className="flex items-center gap-2 text-violet-400 font-bold uppercase tracking-wider text-xs">
-              <KeyRound className="w-4 h-4 text-violet-400 shrink-0" />
-              <span>01. 3 VIOLET SECURITY KEYCARDS (SPATIAL DISPERSION)</span>
-            </div>
-            <p className="mt-1.5 text-slate-300 leading-relaxed text-xs">
-              Three violet security keycards are hidden deep in isolated dead-ends across separate wings of the 10×10 labyrinth. All 3 must be recovered to disengage the extraction portal seal.
-            </p>
-          </div>
+        <div className="flex items-center gap-3 w-full sm:w-auto">
+          {/* Abort / Return to Menu Button */}
+          <button
+            onClick={() => {
+              soundEngine.playButtonClick();
+              onBackToMenu();
+            }}
+            onMouseEnter={() => soundEngine.playButtonHover()}
+            className="px-5 py-3 rounded-lg bg-black/60 hover:bg-black/90 border border-[#8a7243]/50 hover:border-[#ffd700] text-[#c5a059] hover:text-[#fff] text-xs font-ancient tracking-[0.2em] uppercase transition-all cursor-pointer shadow-[0_0_15px_rgba(0,0,0,0.8)]"
+          >
+            [ RETREAT // ESC ]
+          </button>
 
-          {/* Rule 2 */}
-          <div className="p-3.5 rounded-xl bg-[#0a050d] border border-red-900/50 hover:border-red-600/70 transition-colors">
-            <div className="flex items-center gap-2 text-red-400 font-bold uppercase tracking-wider text-xs">
-              <ShieldAlert className="w-4 h-4 text-red-400 shrink-0" />
-              <span>02. 12-METER AGGRO RADIUS</span>
-            </div>
-            <p className="mt-1.5 text-slate-300 leading-relaxed text-xs">
-              Entities remain completely dormant beyond 12 meters. Once inside 12 meters, any unobserved Weeping Angel will sprint at lethal velocity. Listen for grinding granite and mounting heartbeat tempo.
-            </p>
-          </div>
-
-          {/* Rule 3 */}
-          <div className="p-3.5 rounded-xl bg-[#0a050d] border border-red-900/50 hover:border-amber-600/70 transition-colors">
-            <div className="flex items-center gap-2 text-amber-400 font-bold uppercase tracking-wider text-xs">
-              <Eye className="w-4 h-4 text-amber-400 shrink-0" />
-              <span>03. STRICT QUANTUM-LOCK & CORNER OCCLUSION</span>
-            </div>
-            <p className="mt-1.5 text-slate-300 leading-relaxed text-xs">
-              Direct line-of-sight and your flashlight beam permanently quantum-lock angels into inert stone. Breaking line-of-sight around corridor corners naturally halts pursuit. <strong className="text-red-400">DO NOT BLINK [B]</strong> while staring directly at them.
-            </p>
-          </div>
-
-          {/* Rule 4 */}
-          <div className="p-3.5 rounded-xl bg-[#0a050d] border border-red-900/50 hover:border-violet-500/70 transition-colors">
-            <div className="flex items-center gap-2 text-violet-300 font-bold uppercase tracking-wider text-xs">
-              <Compass className="w-4 h-4 text-violet-400 shrink-0" />
-              <span>04. RANDOMIZED EXTRACTION PORTAL</span>
-            </div>
-            <p className="mt-1.5 text-slate-300 leading-relaxed text-xs">
-              The exit portal is positioned in a distant sector corner. It illuminates only after verifying all 3 Keycards. Entering triggers absolute AI immunity and dimensional extraction.
-            </p>
-          </div>
-        </div>
-
-        {/* Bottom Action Footer with Enter prompt */}
-        <div className="mt-7 pt-5 border-t border-red-950/80 flex flex-col sm:flex-row items-center justify-between gap-4 font-mono-tabular">
-          <div className="text-center sm:text-left">
-            <div className="text-xs tracking-[0.25em] text-red-400 font-bold uppercase flex items-center gap-1.5">
-              <CornerDownLeft className="w-4 h-4 text-red-400 animate-pulse" />
-              <span>PRESS [ENTER] TO BREACH CONTAINMENT</span>
-            </div>
-            <div className="text-[10px] text-slate-500 tracking-wider uppercase mt-0.5">
-              CUTS MENU AUDIO &amp; LAUNCHES FIRST-PERSON ENGINE
-            </div>
-          </div>
-
-          <div className="flex items-center gap-3 w-full sm:w-auto">
-            <button
-              onClick={() => {
-                soundEngine.playButtonClick();
-                onBackToMenu();
-              }}
-              onMouseEnter={() => soundEngine.playButtonHover()}
-              className="py-3 px-4 rounded-xl bg-white/10 hover:bg-white/20 border border-white/25 text-slate-300 hover:text-white text-xs font-bold tracking-widest uppercase transition-all cursor-pointer"
-            >
-              [ ABORT / ESC ]
-            </button>
-
-            <button
-              onClick={() => {
-                soundEngine.playButtonClick();
-                onBreachContainment();
-              }}
-              onMouseEnter={() => soundEngine.playButtonHover()}
-              className="flex-1 sm:flex-none py-3 px-6 rounded-xl bg-red-700 hover:bg-red-600 border border-red-400/80 text-white text-xs sm:text-sm font-bold tracking-[0.2em] uppercase transition-all cursor-pointer shadow-[0_0_30px_rgba(220,38,38,0.65)] hover:shadow-[0_0_45px_rgba(239,68,68,0.9)] flex items-center justify-center gap-2"
-            >
-              <span>[ BREACH CONTAINMENT ]</span>
-              <ArrowRight className="w-4 h-4" />
-            </button>
-          </div>
+          {/* Enter the Labyrinth Button */}
+          <button
+            onClick={() => {
+              soundEngine.playButtonClick();
+              onBreachContainment();
+            }}
+            onMouseEnter={() => soundEngine.playButtonHover()}
+            className="flex-1 sm:flex-none px-7 py-3 rounded-lg bg-gradient-to-r from-[#8a5d1b] via-[#b8860b] to-[#8a5d1b] hover:from-[#a06d20] hover:via-[#d4af37] hover:to-[#a06d20] border border-[#ffd700] text-[#0d0702] font-ancient font-black text-xs sm:text-sm tracking-[0.22em] uppercase transition-all cursor-pointer shadow-[0_0_30px_rgba(212,175,55,0.7)] hover:shadow-[0_0_45px_rgba(255,215,0,0.95)] hover:scale-[1.02] active:scale-[0.98]"
+          >
+            [ DESCEND INTO LABYRINTH // ENTER ]
+          </button>
         </div>
       </div>
     </div>
