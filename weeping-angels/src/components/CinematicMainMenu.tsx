@@ -42,6 +42,7 @@ export const CinematicMainMenu: React.FC<CinematicMainMenuProps> = ({
   useEffect(() => {
     soundEngine.startMenuAudio();
     if (videoRef.current) {
+      videoRef.current.currentTime = 0;
       videoRef.current.play().catch(() => {});
     }
     return () => {
@@ -79,18 +80,18 @@ export const CinematicMainMenu: React.FC<CinematicMainMenuProps> = ({
       role="region"
       aria-label="Weeping Angels: The Final Gaze Main Menu"
     >
-      {/* Background Looping Gothic Cathedral Video (IntroPage.mp4) */}
+      {/* Background Looping Gothic Cathedral Video (IntroPage.mp4 ONLY) */}
       <video
         ref={videoRef}
         autoPlay
         loop
         muted
         playsInline
+        src="/IntroPage.mp4"
         onLoadedData={() => setVideoLoaded(true)}
         className="fixed inset-0 w-full h-full object-cover pointer-events-none brightness-95 contrast-110"
       >
         <source src="/IntroPage.mp4" type="video/mp4" />
-        <source src="/FinalGenerated.mp4" type="video/mp4" />
       </video>
 
       {/* High-Visibility Subtle Vignette — Preserves rich cathedral video detail */}
