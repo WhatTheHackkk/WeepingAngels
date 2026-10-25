@@ -70,16 +70,39 @@ The audio-visual architecture is engineered to deliver suffocating psychological
 
 ---
 
-## 🚀 Installation & Local Deployment
+## 🚀 Installation & Local Deployment (Cross-Platform)
 
-To spin up the containment grid locally on your machine, follow these steps:
+To spin up the containment grid locally on your machine, follow the platform-specific instructions below.
 
 ### Prerequisites
+Make sure you have the following installed on your system:
 * [Node.js](https://nodejs.org/) (v18.x or higher recommended)
-* [Bun](https://bun.sh/) or npm package manager
+* [Git](https://git-scm.com/)
 
-### Step-by-Step Setup
-1. **Clone the Repository:**
-   ```bash
-   git clone [https://github.com/WhatTheHackkk/WeepingAngels.git](https://github.com/WhatTheHackkk/WeepingAngels.git)
-   cd WeepingAngels/weeping-angels
+---
+
+### Operating System Specific Guides
+
+#### 🪟 Windows Setup (PowerShell / Command Prompt)
+1. Open **PowerShell** or **Command Prompt**.
+2. Clone the repository and navigate into the project directory:
+   `git clone https://github.com/WhatTheHackkk/WeepingAngels.git && cd WeepingAngels/weeping-angels`
+3. Install dependencies and start the local development server:
+   `npm install && npm run dev`
+4. Open your web browser (Chrome, Edge, or Brave) and navigate to `http://localhost:5173`.
+
+---
+
+#### 🍏 macOS Setup (Terminal)
+1. Open the **Terminal** application.
+2. Clone the repository, install dependencies, and boot up the test server:
+   `git clone https://github.com/WhatTheHackkk/WeepingAngels.git && cd WeepingAngels/weeping-angels && npm install && npm run dev`
+3. Open Safari or Google Chrome and go to `http://localhost:5173`.
+
+---
+
+#### 🐧 Linux Setup (Ubuntu / Arch / CachyOS / Hyprland)
+1. Open your terminal emulator (e.g., Kitty, Alacritty, or Bash/Zsh shell).
+2. Clone the repository, install packages, and launch the local development instance:
+   `git clone https://github.com/WhatTheHackkk/WeepingAngels.git && cd WeepingAngels/weeping-angels && npm install && npm run dev`
+3. Open your preferred browser (Firefox, Chromium, or Brave) and access `http://localhost:5173` to breach containment.
