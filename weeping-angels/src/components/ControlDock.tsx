@@ -64,6 +64,7 @@ interface ControlDockProps {
   onBlueprintHoldChange: (held: boolean) => void;
   onGenerateNewMaze: () => void;
   onResetPosition: () => void;
+  onTogglePause?: () => void;
   onReturnToMainMenu?: () => void;
   playerWorldPos: { x: number; z: number; yaw: number };
   angelsPos: AngelHudMarker[];
@@ -79,6 +80,7 @@ export const ControlDock: React.FC<ControlDockProps> = ({
   onToggleAudio,
   isBlueprintOpen,
   onResetPosition,
+  onTogglePause,
   onReturnToMainMenu,
 }) => {
   const totalKeycards = maze.keycardNodes.length;
@@ -99,24 +101,24 @@ export const ControlDock: React.FC<ControlDockProps> = ({
         </div>
       )}
 
-      {/* TOP-LEFT MINIMALIST CONTROLS: Restart Sector, Pause/Menu, Mute Audio */}
+      {/* TOP-LEFT MINIMALIST CONTROLS: Replay/Restart Sector, Pause Game, Mute Audio */}
       <div className="fixed top-5 left-5 z-30 pointer-events-auto flex items-center gap-2.5 font-ancient">
-        {/* Restart Sector Button */}
+        {/* Replay / Restart Sector Button */}
         <button
           onClick={onResetPosition}
-          title="Restart Sector (Reset Position & Sigils)"
+          title="Replay / Restart Sector (Take to starting point)"
           aria-label="Restart Sector"
           className="p-3 rounded-full bg-black/60 hover:bg-black/90 backdrop-blur-md border border-[#c5a059]/40 text-[#d4af37] hover:text-white hover:border-[#ffd700] hover:shadow-[0_0_18px_rgba(212,175,55,0.5)] transition-all cursor-pointer shadow-[0_4px_16px_rgba(0,0,0,0.8)] active:scale-95"
         >
           <RotateCcw className="w-4 h-4" />
         </button>
 
-        {/* Pause / Return to Main Menu Button */}
-        {onReturnToMainMenu && (
+        {/* Pause Game Button */}
+        {(onTogglePause || onReturnToMainMenu) && (
           <button
-            onClick={onReturnToMainMenu}
-            title="Pause & Return to Main Menu"
-            aria-label="Main Menu"
+            onClick={onTogglePause || onReturnToMainMenu}
+            title="Pause Game (Resume or Return to Menu)"
+            aria-label="Pause Game"
             className="p-3 rounded-full bg-black/60 hover:bg-black/90 backdrop-blur-md border border-[#c5a059]/40 text-[#d4af37] hover:text-white hover:border-[#ffd700] hover:shadow-[0_0_18px_rgba(212,175,55,0.5)] transition-all cursor-pointer shadow-[0_4px_16px_rgba(0,0,0,0.8)] active:scale-95"
           >
             <Pause className="w-4 h-4" />

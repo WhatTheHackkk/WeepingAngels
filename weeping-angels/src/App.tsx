@@ -34,6 +34,7 @@ import { ExtractionPhase, ExtractionVictoryOverlay } from './components/Extracti
 import { StudioIntro } from './components/StudioIntro';
 import { CinematicMainMenu } from './components/CinematicMainMenu';
 import { LoreBriefingModal } from './components/LoreBriefingModal';
+import { PauseModal } from './components/PauseModal';
 import { soundEngine } from './maze/soundEffects';
 
 export type AppPhase = 'studio-intro' | 'main-menu' | 'briefing' | 'playing';
@@ -105,6 +106,9 @@ export default function App() {
   const [teleportProgress, setTeleportProgress] = useState<number>(0);
   const [finalEscapeTimeMs, setFinalEscapeTimeMs] = useState<number>(0);
   const [webglLost, setWebglLost] = useState<boolean>(false);
+  const [isGamePaused, setIsGamePaused] = useState<boolean>(false);
+  const isGamePausedRef = useRef<boolean>(false);
+  isGamePausedRef.current = isGamePaused;
 
   const [visitedCells, setVisitedCells] = useState<Set<string>>(() => new Set(['0,0']));
   const visitedCellsRef = useRef<Set<string>>(new Set(['0,0']));
@@ -251,6 +255,8 @@ export default function App() {
 
     setIsGameOver(false);
     setIsBlinking(false);
+    setIsGamePaused(false);
+    isGamePausedRef.current = false;
     setExtractionPhase('none');
     setTeleportProgress(0);
     setIsBlueprintOpen(false);
@@ -735,7 +741,14 @@ export default function App() {
       if (appPhaseRef.current !== 'playing') return;
       keysPressed[e.code] = true;
       const p = playerStateRef.current;
-      if (p.isGameOver) return;
+      if (e.code === 'KeyP' || e.code === 'Escape') {
+        if (!e.repeat) {
+          e.preventDefault();
+          handleTogglePause();
+        }
+        return;
+      }
+      if (isGamePausedRef.current) return;
 
       if (e.code === 'Space') {
         e.preventDefault();
@@ -960,6 +973,17 @@ export default function App() {
       const isLocked = document.pointerLockElement === renderer.domElement;
 
       if (appPhaseRef.current !== 'playing') {
+        renderer.render(scene, fpCamera);
+        if (isSoftwareGl) {
+          afterDraw(tick);
+        } else {
+          frameId = requestAnimationFrame(tick);
+        }
+        return;
+      }
+
+      if (isGamePausedRef.current) {
+        soundEngine.setThreatSightLineActive(false);
         renderer.render(scene, fpCamera);
         if (isSoftwareGl) {
           afterDraw(tick);
@@ -1440,7 +1464,35 @@ export default function App() {
     isBlueprintOpenRef.current = held;
   }, []);
 
+  const handleTogglePause = useCallback(() => {
+    setIsGamePaused((prev) => {
+      const next = !prev;
+      isGamePausedRef.current = next;
+      if (next) {
+        soundEngine.setThreatSightLineActive(false);
+        if (document.pointerLockElement) {
+          document.exitPointerLock?.();
+        }
+      }
+      return next;
+    });
+  }, []);
+
+  const handleResumeGame = useCallback(() => {
+    setIsGamePaused(false);
+    isGamePausedRef.current = false;
+    if (canvasMountRef.current) {
+      try {
+        canvasMountRef.current.requestPointerLock?.();
+      } catch {
+        // Fallback in sandboxes
+      }
+    }
+  }, []);
+
   const handleReturnToMainMenu = useCallback(() => {
+    setIsGamePaused(false);
+    isGamePausedRef.current = false;
     soundEngine.stopAmbientLoop();
     soundEngine.setThreatSightLineActive(false);
     soundEngine.startMenuAudio();
@@ -1590,9 +1642,20 @@ export default function App() {
           onBlueprintHoldChange={handleBlueprintHoldChange}
           onGenerateNewMaze={handleGenerateNewMaze}
           onResetPosition={handleResetPosition}
+          onTogglePause={handleTogglePause}
           onReturnToMainMenu={handleReturnToMainMenu}
           playerWorldPos={playerWorldPos}
           angelsPos={angelsPos}
+        />
+      )}
+
+      {/* Pause Menu Modal (Resume, Replay Sector, Return to Main Menu) */}
+      {appPhase === 'playing' && (
+        <PauseModal
+          isOpen={isGamePaused && !isGameOver && extractionPhase === 'none'}
+          onResume={handleResumeGame}
+          onRestartSector={handleResetPosition}
+          onReturnToMainMenu={handleReturnToMainMenu}
         />
       )}
     </main>

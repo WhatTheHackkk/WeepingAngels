@@ -79,15 +79,15 @@ export const LoreBriefingModal: React.FC<LoreBriefingModalProps> = ({
       role="dialog"
       aria-label="Labyrinth Briefing and Lore"
     >
-      {/* Background Atmosphere Video */}
+      {/* Background Atmosphere Video (IntroPage.mp4 ONLY) */}
       <video
         autoPlay
         loop
         muted
         playsInline
+        src="/IntroPage.mp4"
         className="fixed inset-0 w-full h-full object-cover pointer-events-none brightness-[0.45] contrast-125 filter saturate-90"
       >
-        <source src="/FinalGenerated.mp4" type="video/mp4" />
         <source src="/IntroPage.mp4" type="video/mp4" />
       </video>
 
