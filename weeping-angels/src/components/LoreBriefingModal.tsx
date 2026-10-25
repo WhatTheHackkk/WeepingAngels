@@ -8,12 +8,12 @@ interface LoreBriefingModalProps {
 }
 
 const LORE_PARAGRAPHS = [
-  'They are the Lonely Assassins — entities as ancient as time, frozen into lifeless stone only whilst observed.',
-  'To hold their gaze is your singular defense. To turn away is your doom.',
-  'While watched, they cannot move, held fast by quantum lock. Yet the instant your eyes turn — or you blink — they strike with terrifying swiftness.',
-  'Three violet sigils lie entombed within these sacred catacombs. Seek every stone to awaken the extraction gateway.',
-  'Trust not the shadows. Never turn your back. And above all else...',
-  'DO NOT BLINK.',
+  "You're trapped inside the labyrinth with the Weeping Angels.",
+  "They're faster than anything you've ever seen, but they have one weakness: they're quantum-locked. As long as you're staring right at them, they turn to solid stone and cannot move.",
+  "The second you look away—or the second you blink—they hunt.",
+  "To escape alive, you need to find 3 violet keycards hidden in the corners of this maze. Once you collect all three, the exit portal will unlock.",
+  "Keep your flashlight steady. Watch your corners.",
+  "And whatever you do... don't blink. Blink and you're dead.",
 ];
 
 export const LoreBriefingModal: React.FC<LoreBriefingModalProps> = ({
@@ -25,7 +25,7 @@ export const LoreBriefingModal: React.FC<LoreBriefingModalProps> = ({
   const [isTypingComplete, setIsTypingComplete] = useState(false);
   const clickCounterRef = useRef(0);
 
-  // Keyboard shortcut listeners: Enter to descend, Escape to abort, Space to complete typewriter
+  // Keyboard shortcut listeners: Enter to enter, Escape to return, Space to finish typing
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.code === 'Enter' || e.code === 'NumpadEnter') {
@@ -47,7 +47,7 @@ export const LoreBriefingModal: React.FC<LoreBriefingModalProps> = ({
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [onBreachContainment, onBackToMenu, isTypingComplete, fullText.length]);
 
-  // Antique Typewriter Effect with Audio Scribe Clicks
+  // Typewriter effect with crisp clicks
   useEffect(() => {
     if (displayedLength >= fullText.length) {
       setIsTypingComplete(true);
@@ -55,14 +55,12 @@ export const LoreBriefingModal: React.FC<LoreBriefingModalProps> = ({
     }
 
     const nextChar = fullText[displayedLength];
-    // Slightly longer pauses on punctuation
-    const delay = nextChar === '.' || nextChar === '?' || nextChar === '!' ? 220 : nextChar === '\n' ? 140 : 28;
+    const delay = nextChar === '.' || nextChar === '?' || nextChar === '!' ? 180 : nextChar === '\n' ? 120 : 24;
 
     const timer = setTimeout(() => {
       setDisplayedLength((prev) => {
         const next = prev + 1;
         clickCounterRef.current += 1;
-        // Play typewriter sound every 2-3 characters to keep audio rich and crisp without overwhelming
         if (clickCounterRef.current % 2 === 0 && nextChar !== ' ' && nextChar !== '\n') {
           soundEngine.playTypewriterClick();
         }
@@ -79,52 +77,43 @@ export const LoreBriefingModal: React.FC<LoreBriefingModalProps> = ({
     <div
       className="fixed inset-0 z-50 bg-black text-[#f1e6cf] flex flex-col justify-between p-6 sm:p-12 md:p-16 select-none pointer-events-auto overflow-hidden font-gothic"
       role="dialog"
-      aria-label="Lore and Inscription of the Labyrinth"
+      aria-label="Labyrinth Briefing and Lore"
     >
-      {/* Background Gothic Cathedral Video */}
+      {/* Background Atmosphere Video */}
       <video
         autoPlay
         loop
         muted
         playsInline
-        className="fixed inset-0 w-full h-full object-cover pointer-events-none brightness-[0.42] contrast-125 filter saturate-90"
+        className="fixed inset-0 w-full h-full object-cover pointer-events-none brightness-[0.45] contrast-125 filter saturate-90"
       >
         <source src="/FinalGenerated.mp4" type="video/mp4" />
-        <source src="/Music/FinalGenerated.mp4" type="video/mp4" />
+        <source src="/IntroPage.mp4" type="video/mp4" />
       </video>
 
-      {/* Atmospheric Vignette & Subtle Warm Embers Gradient */}
+      {/* Atmospheric Vignette Overlay */}
       <div
         className="fixed inset-0 pointer-events-none"
         style={{
           background:
-            'radial-gradient(ellipse at 25% 30%, rgba(20, 14, 5, 0.45) 0%, rgba(5, 3, 7, 0.85) 60%, rgba(0, 0, 0, 0.98) 100%)',
+            'radial-gradient(ellipse at 25% 30%, rgba(20, 14, 5, 0.45) 0%, rgba(5, 3, 7, 0.85) 65%, rgba(0, 0, 0, 0.98) 100%)',
         }}
       />
 
-      {/* Subtle CRT / Ancient parchment noise lines */}
-      <div
-        className="fixed inset-0 pointer-events-none opacity-15"
-        style={{
-          backgroundImage:
-            'repeating-linear-gradient(0deg, rgba(212, 175, 55, 0.08) 0px, rgba(212, 175, 55, 0.08) 1px, transparent 1px, transparent 4px)',
-        }}
-      />
-
-      {/* TOP LEFT: Golden Antique Typewriter Lore Inscription */}
+      {/* TOP LEFT: Golden Typewriter Text in Ancient English Font */}
       <div className="relative z-10 max-w-2xl text-left">
-        {/* Ancient Header */}
-        <div className="flex items-center gap-2.5 text-[#d4af37] text-xs sm:text-sm tracking-[0.35em] uppercase font-ancient font-semibold mb-4 text-glow-gold">
+        {/* Subtle Header */}
+        <div className="flex items-center gap-2.5 text-[#d4af37] text-xs sm:text-sm tracking-[0.3em] uppercase font-ancient font-semibold mb-4 text-glow-gold">
           <Sparkles className="w-4 h-4 text-[#ffd700] animate-pulse" />
-          <span>CHRONICLES OF THE SEPULCHRE // LIBER PRIMUS</span>
+          <span>WEEPING ANGELS // SURVIVAL BRIEFING</span>
         </div>
 
-        {/* Written Lore in Ancient Font and Golden Letters */}
+        {/* Written Lore in Human Language with Ancient Golden Script */}
         <div
           className="font-ancient text-base sm:text-lg md:text-xl text-[#f3e5ab] leading-relaxed tracking-wide space-y-4 whitespace-pre-line"
           style={{
             textShadow:
-              '0 0 16px rgba(212, 175, 55, 0.6), 0 0 32px rgba(180, 130, 20, 0.3), 0 2px 8px rgba(0,0,0,0.95)',
+              '0 0 16px rgba(212, 175, 55, 0.65), 0 0 32px rgba(180, 130, 20, 0.35), 0 2px 8px rgba(0,0,0,0.95)',
           }}
         >
           {displayedContent}
@@ -133,7 +122,7 @@ export const LoreBriefingModal: React.FC<LoreBriefingModalProps> = ({
           )}
         </div>
 
-        {/* Fast Skip prompt while typing */}
+        {/* Spacebar to instant skip */}
         {!isTypingComplete && (
           <button
             onClick={() => {
@@ -142,20 +131,20 @@ export const LoreBriefingModal: React.FC<LoreBriefingModalProps> = ({
             }}
             className="mt-6 text-[11px] font-ancient tracking-[0.25em] text-[#c5a059]/70 hover:text-[#ffd700] uppercase transition-colors cursor-pointer"
           >
-            [ PRESS SPACE TO REVEAL FULL INSCRIPTION ]
+            [ PRESS SPACE TO REVEAL ]
           </button>
         )}
       </div>
 
-      {/* BOTTOM ACTION BAR: Aesthetic Ancient Controls */}
+      {/* BOTTOM ACTION BAR */}
       <div className="relative z-10 pt-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-t border-[#c5a059]/30 font-gothic">
         <div className="flex items-center gap-2 text-xs sm:text-sm text-[#c5a059] tracking-[0.2em] font-ancient">
           <Flame className="w-4 h-4 text-[#d4af37] shrink-0" />
-          <span>THREE VIOLET SEALS · QUANTUM ENTITIES AWAKE</span>
+          <span>3 VIOLET KEYCARDS · DON'T BLINK</span>
         </div>
 
         <div className="flex items-center gap-3 w-full sm:w-auto">
-          {/* Abort / Return to Menu Button */}
+          {/* Back to Menu Button */}
           <button
             onClick={() => {
               soundEngine.playButtonClick();
@@ -164,7 +153,7 @@ export const LoreBriefingModal: React.FC<LoreBriefingModalProps> = ({
             onMouseEnter={() => soundEngine.playButtonHover()}
             className="px-5 py-3 rounded-lg bg-black/60 hover:bg-black/90 border border-[#8a7243]/50 hover:border-[#ffd700] text-[#c5a059] hover:text-[#fff] text-xs font-ancient tracking-[0.2em] uppercase transition-all cursor-pointer shadow-[0_0_15px_rgba(0,0,0,0.8)]"
           >
-            [ RETREAT // ESC ]
+            [ RETURN // ESC ]
           </button>
 
           {/* Enter the Labyrinth Button */}
@@ -176,7 +165,7 @@ export const LoreBriefingModal: React.FC<LoreBriefingModalProps> = ({
             onMouseEnter={() => soundEngine.playButtonHover()}
             className="flex-1 sm:flex-none px-7 py-3 rounded-lg bg-gradient-to-r from-[#8a5d1b] via-[#b8860b] to-[#8a5d1b] hover:from-[#a06d20] hover:via-[#d4af37] hover:to-[#a06d20] border border-[#ffd700] text-[#0d0702] font-ancient font-black text-xs sm:text-sm tracking-[0.22em] uppercase transition-all cursor-pointer shadow-[0_0_30px_rgba(212,175,55,0.7)] hover:shadow-[0_0_45px_rgba(255,215,0,0.95)] hover:scale-[1.02] active:scale-[0.98]"
           >
-            [ DESCEND INTO LABYRINTH // ENTER ]
+            [ ENTER THE LABYRINTH // ENTER ]
           </button>
         </div>
       </div>

@@ -380,7 +380,10 @@ function createSeamlessConcretePBRMaps(maxAnisotropy: number): {
       const n1 = sampleTileableNoise(u * 8, v * 8, 8);
       const n2 = sampleTileableNoise(u * 16, v * 16, 16) * 0.5;
       const n3 = sampleTileableNoise(u * 32, v * 32, 32) * 0.25;
-      const fbm = (n1 + n2 + n3) / 1.75;
+      const n4 = sampleTileableNoise(u * 64, v * 64, 64) * 0.125;
+      const microGrain = grid[y * size + x];
+
+      const fbm = (n1 + n2 + n3 + n4) / 1.875;
 
       const seamY = Math.min(y % 128, 128 - (y % 128));
       const seamX = Math.min(x % 256, 256 - (x % 256));
@@ -388,69 +391,99 @@ function createSeamlessConcretePBRMaps(maxAnisotropy: number): {
       const grooveX = seamX < 2 ? (2 - seamX) / 2 : 0;
       const seamFactor = Math.max(grooveY, grooveX * 0.65);
 
-      // Smooth stone wall heightfield [0..1] with clean mortar recessed joints
+      const pit = microGrain < 0.055 ? (0.055 - microGrain) * 14.0 : 0.0;
+      const microCrackSig = Math.abs(
+        sampleTileableNoise(u * 32 + n1 * 1.8, v * 32 - n2 * 1.8, 32) - 0.5
+      );
+      const microCrack = microCrackSig < 0.028 ? (0.028 - microCrackSig) / 0.028 : 0;
+
+      // Concrete pore heightfield [0..1]
       const concreteHeight = Math.max(
         0,
-        Math.min(1, 0.55 + (fbm - 0.5) * 0.35 - seamFactor * 0.5)
+        Math.min(
+          1,
+          fbm * 0.72 + microGrain * 0.28 - seamFactor * 0.55 - pit * 0.48 - microCrack * 0.42
+        )
       );
 
-      // Capillary seepage into mortar seams
-      const warpU = u + (n2 - 0.5) * 0.1;
+      // Capillary blood seepage that soaks preferentially into low concrete pores & crevices!
+      const warpU = u + (n2 - 0.5) * 0.14 + (n3 - 0.5) * 0.06;
       const warpV = v + (n1 - 0.5) * 0.08;
       const seepageField = sampleTileableNoise(warpU * 8, warpV * 8, 8);
-      const streakField = sampleTileableNoise(warpU * 32, v * 4, 32);
-      const poreAffinity = (1.0 - concreteHeight) * 0.5 + seamFactor * 0.5;
+      const streakField = sampleTileableNoise(warpU * 48, v * 4, 48);
+      const poreAffinity = (1.0 - concreteHeight) * 0.55 + microCrack * 0.65 + seamFactor * 0.45;
 
       const rawBloodPotential =
-        (seepageField - 0.52) * 1.8 + (streakField - 0.5) * 0.7 + poreAffinity * 0.45;
-      const wetCoreBlood = Math.max(0, Math.min(1, (rawBloodPotential - 0.45) * 2.5));
-      const driedOuterBlood = Math.max(0, Math.min(1, (rawBloodPotential - 0.2) * 1.8));
+        (seepageField - 0.52) * 2.1 + (streakField - 0.5) * 0.85 + poreAffinity * 0.55;
+      // Wet glistening blood core inside deep crevices vs jagged dried outer splatter halo
+      const wetCoreBlood = Math.max(0, Math.min(1, (rawBloodPotential - 0.38) * 3.2));
+      const driedOuterBlood = Math.max(0, Math.min(1, (rawBloodPotential - 0.12) * 2.2));
 
-      const finalHeight = Math.max(0, Math.min(1, concreteHeight));
+      // Viscous blood slightly fills and rounds out the deepest pore bottoms while creating a meniscus rim
+      const meniscusRim = driedOuterBlood * (1.0 - wetCoreBlood) * 0.08;
+      const finalHeight = Math.max(
+        0,
+        Math.min(1, concreteHeight - wetCoreBlood * 0.06 + meniscusRim)
+      );
       const hByte = Math.round(finalHeight * 255);
       heightBytes[y * size + x] = hByte;
 
-      const edgeArchAO = 1.0 - Math.pow(Math.abs(v - 0.5) * 1.95, 4.0) * 0.25;
+      const edgeArchAO = 1.0 - Math.pow(Math.abs(v - 0.5) * 1.95, 4.0) * 0.32;
       const aoVal = Math.max(
-        0.2,
+        0.14,
         Math.min(
           1.0,
-          (0.82 + fbm * 0.18 - seamFactor * 0.45 - driedOuterBlood * 0.2) * edgeArchAO
+          (0.76 +
+            fbm * 0.24 -
+            seamFactor * 0.58 -
+            pit * 0.5 -
+            microCrack * 0.45 -
+            driedOuterBlood * 0.28) *
+            edgeArchAO
         )
       );
       const aoByte = Math.round(aoVal * 255);
 
-      // Multi-layered roughness: clean matte ancient stone (0.80 - 0.94)
+      // Multi-layered roughness:
+      // - Unstained concrete: ~0.88 matte
+      // - Dried splatter radiant rim: ~0.92 chalky crust
+      // - Wet glistening blood crevice core: ~0.16 mirror-wet specular!
       const roughVal = Math.max(
-        0.75,
+        0.14,
         Math.min(
-          0.96,
-          0.88 + (0.5 - fbm) * 0.1 - wetCoreBlood * 0.12
+          0.98,
+          0.86 +
+            (0.5 - fbm) * 0.18 +
+            pit * 0.1 +
+            driedOuterBlood * 0.08 -
+            wetCoreBlood * 0.72
         )
       );
       const roughByte = Math.round(roughVal * 255);
 
-      const baseLum = 24 + concreteHeight * 22 - seamFactor * 12;
+      const baseLum = 22 + concreteHeight * 26 - seamFactor * 14;
       let r = baseLum * 0.94;
       let g = baseLum * 0.96;
-      let b = baseLum * 1.04;
+      let b = baseLum * 1.08;
 
       if (driedOuterBlood > 0.01) {
-        const dryR = 60;
-        const dryG = 12;
-        const dryB = 14;
-        r = r * (1 - driedOuterBlood * 0.75) + dryR * (driedOuterBlood * 0.75);
-        g = g * (1 - driedOuterBlood * 0.82) + dryG * (driedOuterBlood * 0.82);
-        b = b * (1 - driedOuterBlood * 0.82) + dryB * (driedOuterBlood * 0.82);
+        // Dried oxidized brown-crimson splatter radiant soaked into pores
+        const dryR = 54 + microGrain * 22;
+        const dryG = 8 + microGrain * 5;
+        const dryB = 9 + microGrain * 5;
+        r = r * (1 - driedOuterBlood * 0.78) + dryR * (driedOuterBlood * 0.78);
+        g = g * (1 - driedOuterBlood * 0.86) + dryG * (driedOuterBlood * 0.86);
+        b = b * (1 - driedOuterBlood * 0.86) + dryB * (driedOuterBlood * 0.86);
       }
 
       if (wetCoreBlood > 0.01) {
-        const wetR = 95;
-        const wetG = 6;
-        const wetB = 8;
-        r = r * (1 - wetCoreBlood * 0.88) + wetR * (wetCoreBlood * 0.88);
-        g = g * (1 - wetCoreBlood * 0.92) + wetG * (wetCoreBlood * 0.92);
-        b = b * (1 - wetCoreBlood * 0.92) + wetB * (wetCoreBlood * 0.92);
+        // Deep, wet glistening arterial-venous blood pooling inside the concrete crevices
+        const wetR = 92 + microGrain * 28;
+        const wetG = 4 + microGrain * 3;
+        const wetB = 6 + microGrain * 4;
+        r = r * (1 - wetCoreBlood * 0.92) + wetR * (wetCoreBlood * 0.92);
+        g = g * (1 - wetCoreBlood * 0.96) + wetG * (wetCoreBlood * 0.96);
+        b = b * (1 - wetCoreBlood * 0.96) + wetB * (wetCoreBlood * 0.96);
       }
 
       const idx4 = (y * size + x) * 4;
@@ -493,7 +526,7 @@ function createSeamlessConcretePBRMaps(maxAnisotropy: number): {
   const roughnessMap = configureTex(roughnessBytes, THREE.NoColorSpace);
   const aoMap = configureTex(aoBytes, THREE.NoColorSpace);
   const bumpMap = configureTex(bumpBytes, THREE.NoColorSpace);
-  const normalMap = heightfieldToNormalTexture(heightBytes, size, 1.25, maxAnisotropy, 1, 1);
+  const normalMap = heightfieldToNormalTexture(heightBytes, size, 3.6, maxAnisotropy, 1, 1);
 
   return { albedoMap, normalMap, roughnessMap, aoMap, bumpMap };
 }
@@ -513,32 +546,34 @@ function createFloorPBRMaps(maxAnisotropy: number): {
   const roughnessBytes = new Uint8Array(size * size * 4);
   const aoBytes = new Uint8Array(size * size * 4);
 
-  const { sampleSmooth } = createNoiseSampler(size, 44109);
+  let seed = 44109;
+  const rand = () => {
+    seed = (seed * 16807) % 2147483647;
+    return (seed - 1) / 2147483646;
+  };
 
   for (let y = 0; y < size; y++) {
     for (let x = 0; x < size; x++) {
-      const u = x / size;
-      const v = y / size;
       const tileX = x % 128;
       const tileY = y % 128;
       const distEdge = Math.min(tileX, 128 - tileX, tileY, 128 - tileY);
-      const isGroove = distEdge < 3 ? (3 - distEdge) / 3 : 0;
+      const isGroove = distEdge < 4 ? (4 - distEdge) / 4 : 0;
 
-      const smoothNoise = sampleSmooth(u * 8, v * 8, 8);
-      const h = Math.max(0, Math.min(1, 0.6 + (smoothNoise - 0.5) * 0.15 - isGroove * 0.55));
+      const grain = rand();
+      const h = Math.max(0, Math.min(1, 0.65 + (grain - 0.5) * 0.25 - isGroove * 0.58));
       heightBytes[y * size + x] = Math.round(h * 255);
 
-      const ao = Math.max(0.25, Math.min(1.0, 0.92 - isGroove * 0.65));
+      const ao = Math.max(0.2, Math.min(1.0, 0.92 - isGroove * 0.68 - (1 - grain) * 0.08));
       const aoByte = Math.round(ao * 255);
 
-      const rough = Math.max(0.75, Math.min(0.95, 0.85 + isGroove * 0.1));
+      const rough = Math.max(0.42, Math.min(0.95, 0.68 + isGroove * 0.24 + (grain - 0.5) * 0.14));
       const roughByte = Math.round(rough * 255);
 
-      const lum = 20 + h * 16 - isGroove * 10;
+      const lum = 18 + h * 18 - isGroove * 10;
       const idx4 = (y * size + x) * 4;
       albedoBytes[idx4] = Math.round(lum * 0.95);
       albedoBytes[idx4 + 1] = Math.round(lum * 0.94);
-      albedoBytes[idx4 + 2] = Math.round(lum * 1.04);
+      albedoBytes[idx4 + 2] = Math.round(lum * 1.08);
       albedoBytes[idx4 + 3] = 255;
 
       roughnessBytes[idx4] = roughByte;
@@ -570,7 +605,7 @@ function createFloorPBRMaps(maxAnisotropy: number): {
   const floorAlbedo = makeFloorTex(albedoBytes, THREE.SRGBColorSpace);
   const floorRoughness = makeFloorTex(roughnessBytes, THREE.NoColorSpace);
   const floorAO = makeFloorTex(aoBytes, THREE.NoColorSpace);
-  const floorNormal = heightfieldToNormalTexture(heightBytes, size, 0.95, maxAnisotropy, 21, 21);
+  const floorNormal = heightfieldToNormalTexture(heightBytes, size, 2.8, maxAnisotropy, 21, 21);
 
   return { floorAlbedo, floorNormal, floorRoughness, floorAO };
 }
@@ -954,54 +989,56 @@ export function createProceduralMaterialLibrary(
   const angelFaceTex = createAngelFaceWeepingTexture(maxAnisotropy, extraDisposables);
   const contactShadowTex = createContactShadowTexture();
 
-  // 1. Primary Extruded Wall Cube Material (Gothic stone blocks with subtle mortar seams)
+  // 1. Primary Extruded Wall Cube Material (with capillary pore blood seepage & wet crevice specular)
   const wallMainMaterial = new THREE.MeshStandardMaterial({
     color: new THREE.Color('#2c303a'),
     map: albedoMap,
     normalMap: normalMap,
-    normalScale: new THREE.Vector2(0.65, 0.65),
+    normalScale: new THREE.Vector2(1.55, 1.55),
     roughnessMap: roughnessMap,
-    roughness: 0.88,
+    roughness: 0.92,
     aoMap: aoMap,
-    aoMapIntensity: 1.2,
-    metalness: 0.0,
+    aoMapIntensity: 1.32,
+    bumpMap: bumpMap,
+    bumpScale: 0.05,
+    metalness: 0.12,
   });
 
   // 2. Secondary Wall Plinth Base Material
   const wallPlinthMaterial = new THREE.MeshStandardMaterial({
     color: new THREE.Color('#16131a'),
     normalMap: normalMap,
-    normalScale: new THREE.Vector2(0.55, 0.55),
+    normalScale: new THREE.Vector2(0.75, 0.75),
     roughnessMap: roughnessMap,
     aoMap: aoMap,
-    aoMapIntensity: 1.25,
-    roughness: 0.65,
-    metalness: 0.25,
+    aoMapIntensity: 1.35,
+    roughness: 0.52,
+    metalness: 0.55,
   });
 
   // 3. Accent Wall Crown / Bevel Cap Material
   const wallCapMaterial = new THREE.MeshStandardMaterial({
     color: new THREE.Color('#1d1924'),
     normalMap: normalMap,
-    normalScale: new THREE.Vector2(0.6, 0.6),
+    normalScale: new THREE.Vector2(0.8, 0.8),
     roughnessMap: roughnessMap,
     aoMap: aoMap,
-    aoMapIntensity: 1.15,
-    roughness: 0.68,
-    metalness: 0.2,
+    aoMapIntensity: 1.18,
+    roughness: 0.6,
+    metalness: 0.42,
   });
 
-  // 4. Full PBR Floor Material (Smooth Gothic stone flags)
+  // 4. Full PBR Floor Material
   const floorMaterial = new THREE.MeshStandardMaterial({
     color: new THREE.Color('#1b1d26'),
     map: floorAlbedo,
     normalMap: floorNormal,
-    normalScale: new THREE.Vector2(0.65, 0.65),
+    normalScale: new THREE.Vector2(1.15, 1.15),
     roughnessMap: floorRoughness,
-    roughness: 0.85,
+    roughness: 0.82,
     aoMap: floorAO,
-    aoMapIntensity: 1.2,
-    metalness: 0.02,
+    aoMapIntensity: 1.25,
+    metalness: 0.16,
   });
 
   // 5. Weeping Angel Cracked Grey-Brown Granite PBR Material (Matching 3D Character Sheet)
